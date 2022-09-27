@@ -18,13 +18,15 @@ const Formi = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 30px;font-weight:700;
+  font-size: 30px;
+  font-weight: 700;
 `;
 
 const Row = styled.div`
   display: flex;
   align-items: center;
   margin-top: 8px;
+  padding:13px;
   justify-content: center;
 `;
 
@@ -77,6 +79,17 @@ function Main(props) {
   //set params
   const [receiverAddress, setReceiverAddress] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
+  const [balanceAmount, setBalanceAmount] = useState("");
+
+  // get balance
+  web3.eth.getBalance(Account, function (err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(web3.utils.fromWei(result, "ether") + " ETH");
+      setBalanceAmount(web3.utils.fromWei(result, "ether"));
+    }
+  });
 
   //transfer eth from one account to other
   async function transfer() {
@@ -112,7 +125,19 @@ function Main(props) {
           );
         } else {
           console.log("TRX SUCCESS!! Hash:", hash);
+          
+
+          web3.eth.getBalance(Account, function (err, result) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(web3.utils.fromWei(result, "ether") + " ETH");
+              setBalanceAmount(web3.utils.fromWei(result, "ether"));
+            }
+          });
+
           window.alert("TRANSACTION SUBMITTED! HASH: " + hash);
+
         }
       }
     );
@@ -124,6 +149,10 @@ function Main(props) {
       <Title>🚀 Eth Dapp Transfer 🚀</Title>
       <br />
       <Formi>
+        <Row>
+          <Label>Balance :</Label>
+          <Label>{balanceAmount} ETH</Label>
+        </Row>
         <Row>
           <Label>Send to :</Label>
           <BigInput
