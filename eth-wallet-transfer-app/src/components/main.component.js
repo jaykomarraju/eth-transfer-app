@@ -77,9 +77,26 @@ function Main(props) {
   //set params
   const [receiverAddress, setReceiverAddress] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
+  const [balance, setBalance] = useState("");
+
+  web3.eth.getBalance(Account, function(err, res) {
+    if (err){
+      console.log("A")
+    }
+    else {
+      console.log(web3.utils.fromWei(res, 'ether'));
+      setBalance(web3.utils.fromWei(res, 'ether'));
+      // console.log("NB")
+    }
+  })
+
+  
 
   //transfer eth from one account to other
   async function transfer() {
+
+
+
     // get nonce
     const nonce = await web3.eth.getTransactionCount(Account, "latest");
 
@@ -101,6 +118,8 @@ function Main(props) {
       PrivateKey
     );
 
+   
+
     //send signed Transaction
     web3.eth.sendSignedTransaction(
       signTransaction.rawTransaction,
@@ -116,14 +135,30 @@ function Main(props) {
         }
       }
     );
+
+
+    web3.eth.getBalance(Account, function(err, res) {
+      if (err){
+        console.log(err)
+      }
+      else {
+        console.log(web3.utils.fromWei(res, 'ether'));
+        setBalance(web3.utils.fromWei(res, 'ether'));
+        // console.log("NB")
+      }
+    })
+    
   }
 
   return (
     <Wrap>
       <br />
-      <Title>🚀 Eth Dapp Transfer 🚀</Title>
+      <Title> Eth Dapp Transfer </Title>
       <br />
       <Formi>
+        <Row>
+          <Label>Balance: {balance} ETH</Label>
+        </Row>
         <Row>
           <Label>Send to :</Label>
           <BigInput
